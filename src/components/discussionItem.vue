@@ -1,32 +1,38 @@
 <template>
-    <div class="d-flex justify-content-between border-bottom p-3">
-        <div class="d-flex flex-direction-column">
-            <div class="discussion-item-pic">
-                <img src="@/assets/images/profile-picture-2.jpg" class="object-fit-cover rounded-circle w-100 h-100"
-                    alt="profile-picture">
-            </div>
-            <div class="discussion-item-border">
-                <div class="discussion-item-border-item"></div>
-            </div>
-        </div>
-        <div class="w-100 ml-2">
-            <div class="d-flex align-items-center">
-                <h4 class="m-0 mr-1">Bessie Cooper</h4>
-                <span class="discussion-item-time">3h ago</span>
-            </div>
-            <p class="discussion-item-text">I think for our second campaign we can try to target a different audience.
-                How does it sound for you?</p>
-            <div class="d-flex align-items-center mt-2">
-                <div @click="iLikedIt" class="discussion-item-like d-flex align-items-center pointer mr-3"
-                    :class="{ 'discussion-item-like-active': like }">
-                    <img v-if="!like" src="@/assets/svg/like-dark.svg" alt="like">
-                    <img v-if="like" src="@/assets/svg/like-white.svg" alt="like">
-                    <span class="font-weight-bold ml-1 mt-1" :class="{ 'text-white': like }">2</span>
+    <div class="d-flex flex-column-reverse">
+        <div v-for="(item, index) in discussions" :key="index" class="d-flex justify-content-between border-bottom p-3">
+            <div class="d-flex flex-direction-column">
+                <div class="discussion-item-pic">
+                    <img v-if="item.user.avatar" :src="item.user.avatar"
+                        class="object-fit-cover rounded-circle w-100 h-100" alt="profile-picture">
+                    <h4 v-if="!item.user.avatar"
+                        class="discussion-item-pic d-flex justify-content-center align-items-center rounded-circle bg-light-blue text-blue m-0">
+                        {{ showNameInitials(item.user.name) }}</h4>
                 </div>
-                <h5 @click="showAddReply" class="discussion-item-reply pointer m-0">Reply</h5>
+                <div class="discussion-item-border">
+                    <div :class="{ 'discussion-item-border-item': item.replies.length }"></div>
+                </div>
             </div>
-            <replyItem></replyItem>
-            <addReply v-if="reply"></addReply>
+            <div class="w-100 ml-2">
+                <div class="d-flex align-items-center">
+                    <h4 class="m-0 mr-1">{{ item.user.name }}</h4>
+                    <span class="discussion-item-time">{{ item.date }}</span>
+                </div>
+                <p class="discussion-item-text">{{ item.text }}</p>
+                <div class="d-flex align-items-center mt-2">
+                    <div class="discussion-item-like d-flex align-items-center pointer mr-3"
+                        :class="{ 'discussion-item-like-active': item.iLikedIt }">
+                        <img v-if="!item.iLikedIt" src="@/assets/svg/like-dark.svg" alt="like">
+                        <img v-if="item.iLikedIt" src="@/assets/svg/like-white.svg" alt="like">
+                        <span class="font-weight-bold ml-1 mt-1" :class="{ 'text-white': item.iLikedIt }">{{
+                            item.likes
+                        }}</span>
+                    </div>
+                    <h5 @click="showAddReply" class="discussion-item-reply pointer m-0">Reply</h5>
+                </div>
+                <replyItem :itemReplies="item.replies"></replyItem>
+                <addReply v-if="reply"></addReply>
+            </div>
         </div>
     </div>
 </template>
@@ -47,16 +53,18 @@ export default {
     },
     data() {
         return {
-            like: false,
             reply: false,
         }
     },
     methods: {
+        showNameInitials(name) {
+            return name.split(" ").map((n, i, a) => i === 0 || i + 1 === a.length ? n[0] : null).join("").toUpperCase();
+        },
         showAddReply() {
             this.reply = !this.reply
         },
-        iLikedIt() {
-            this.like = !this.like
+        addReply() {
+
         }
     },
 }

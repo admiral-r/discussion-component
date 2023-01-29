@@ -1,24 +1,27 @@
 <template>
-    <div class="d-flex justify-content-between mt-3">
+    <div v-for="(item, index) in itemReplies" :key="index" class="d-flex justify-content-between mt-3">
         <div>
             <div class="reply-item-pic mr-2">
-                <img src="@/assets/images/profile-picture-4.jpg" class="object-fit-cover rounded-circle w-100 h-100"
+                <img v-if="item.user.avatar" :src="item.user.avatar" class="object-fit-cover rounded-circle w-100 h-100"
                     alt="profile-picture">
+                <h4 v-if="!item.user.avatar"
+                    class="reply-item-pic d-flex justify-content-center align-items-center rounded-circle bg-light-blue text-blue m-0">
+                    {{ showNameInitials(item.user.name) }}</h4>
             </div>
         </div>
         <div class="w-100">
             <div class="d-flex align-items-center">
-                <h4 class="m-0 mr-1">Bessie Cooper</h4>
-                <span class="reply-item-time">3h ago</span>
+                <h4 class="m-0 mr-1">{{ item.user.name }}</h4>
+                <span class="reply-item-time">{{ item.date }}</span>
             </div>
-            <p class="reply-item-text">I think for our second campaign we can try to target a different audience.
-                How does it sound for you?</p>
+            <p class="reply-item-text">{{ item.text }}</p>
             <div class="d-flex mt-2">
                 <div class="reply-item-like d-flex align-items-center pointer mr-3 "
-                    :class="{ 'reply-item-like-active': like }">
-                    <img v-if="!like" src="@/assets/svg/like-dark.svg" alt="like">
-                    <img v-if="like" src="@/assets/svg/like-white.svg" alt="like">
-                    <span class="font-weight-bold ml-1 mt-1" :class="{ 'text-white': like }">2</span>
+                    :class="{ 'reply-item-like-active': item.iLikedIt }">
+                    <img v-if="!item.iLikedIt" src="@/assets/svg/like-dark.svg" alt="like">
+                    <img v-if="item.iLikedIt" src="@/assets/svg/like-white.svg" alt="like">
+                    <span class="font-weight-bold ml-1 mt-1"
+                        :class="{ 'text-white': item.iLikedIt }">{{ item.likes }}</span>
                 </div>
             </div>
         </div>
@@ -28,11 +31,21 @@
 <script>
 export default {
     name: 'replyItem',
+    props: {
+        itemReplies: {
+            type: Array,
+        },
+    },
     data() {
         return {
-            like: false,
+
         }
     },
+    methods: {
+        showNameInitials(name) {
+            return name.split(" ").map((n, i, a) => i === 0 || i + 1 === a.length ? n[0] : null).join("").toUpperCase();
+        },
+    }
 }
 </script>
 

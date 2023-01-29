@@ -76,6 +76,10 @@ img {
     justify-content: space-between !important;
 }
 
+.justify-content-center {
+    justify-content: center !important;
+}
+
 .align-items-center {
     align-items: center !important;
 }
@@ -96,12 +100,20 @@ img {
     color: #000000 !important;
 }
 
+.text-blue {
+    color: #3171ae !important;
+}
+
 .bg-white {
     background-color: #ffffff !important;
 }
 
 .bg-light-silver {
     background-color: #fafbfc !important;
+}
+
+.bg-light-blue {
+    background-color: #deedfc;
 }
 
 .h-100 {
