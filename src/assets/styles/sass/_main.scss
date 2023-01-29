@@ -68,6 +68,10 @@ img {
     display: flex !important;
 }
 
+.flex-direction-column {
+    flex-direction: column !important;
+}
+
 .justify-content-between {
     justify-content: space-between !important;
 }
@@ -78,6 +82,10 @@ img {
 
 .flex-column-reverse {
     flex-direction: column-reverse !important;
+}
+
+.font-weight-bold {
+    font-weight: bold;
 }
 
 .text-white {
