@@ -6,13 +6,33 @@
                     alt="profile-picture">
             </div>
         </div>
-        <input class="form-control" type="text" placeholder="Reply">
+        <input @keyup.enter="addReply" v-model="reply[parentItemId]" class="form-control" type="text"
+            placeholder="Reply">
     </div>
 </template>
 
 <script>
 export default {
     name: 'addReply',
+    props: {
+        parentItemId: {
+            type: Number,
+        },
+        replyShow: {
+            type: String,
+        },
+    },
+    data() {
+        return {
+            reply: []
+        }
+    },
+    methods: {
+        addReply() {
+            this.$emit("addReply", this.reply[this.parentItemId] , this.parentItemId , this.replyShow)
+            this.reply[this.parentItemId] = null
+        }
+    },
 }
 </script>
 

@@ -22,19 +22,21 @@ export default {
     },
     methods: {
         addDiscussionText() {
-            this.discussion = {
-                date: new Date().getHours() + ":" + new Date().getMinutes(),
-                user: {
-                    name: "Bryan Cranston",
-                    avatar: require('@/assets/images/profile-picture-3.jpg')
-                },
-                text: this.discussionText,
-                likes: 0,
-                iLikedIt: false,
-                replies: []
-            },
+            if (this.discussionText) {
+                this.discussion = {
+                    date: new Date().getHours() + ":" + new Date().getMinutes(),
+                    user: {
+                        name: "Bryan Cranston",
+                        avatar: require('@/assets/images/profile-picture-3.jpg')
+                    },
+                    text: this.discussionText,
+                    likes: 0,
+                    iLikedIt: false,
+                    replies: []
+                }
                 this.$emit("addDiscussionText", this.discussion)
-            this.discussionText = null
+                this.discussionText = null
+            }
         }
     },
 }
