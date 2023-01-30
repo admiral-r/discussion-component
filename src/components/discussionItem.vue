@@ -1,6 +1,8 @@
 <template>
     <div class="d-flex flex-column-reverse">
-        <div v-for="(item, index) in discussions" :key="index" class="d-flex justify-content-between border-bottom p-3">
+        <div v-for="(item, index) in discussions" :key="index"
+            class="discussion-item-fade d-flex justify-content-between border-bottom p-3">
+            <!---------------- avatar ---------------->
             <div class="d-flex flex-direction-column">
                 <div class="discussion-item-pic">
                     <img v-if="item.user.avatar" :src="item.user.avatar"
@@ -14,13 +16,17 @@
                 </div>
             </div>
             <div class="w-100 ml-2">
-                <div class="d-flex align-items-center">
+                <!---------------- user name and date---------------->
+                <div class="d-flex align-items-center user-select-none">
                     <h4 class="m-0 mr-1">{{ item.user.name }}</h4>
                     <span class="discussion-item-time">{{ item.date }}</span>
                 </div>
-                <p class="discussion-item-text">{{ item.text }}</p>
+                <!---------------- text ---------------->
+                <p class="discussion-item-text user-select-none">{{ item.text }}</p>
+                <!---------------- like ---------------->
                 <div class="d-flex align-items-center mt-2">
-                    <div class="discussion-item-like d-flex align-items-center pointer mr-3"
+                    <div @click="getlikedItem(item.id, item.iLikedIt)"
+                        class="discussion-item-like d-flex align-items-center pointer user-select-none mr-3"
                         :class="{ 'discussion-item-like-active': item.iLikedIt }">
                         <img v-if="!item.iLikedIt" src="@/assets/svg/like-dark.svg" alt="like">
                         <img v-if="item.iLikedIt" src="@/assets/svg/like-white.svg" alt="like">
@@ -28,10 +34,19 @@
                             item.likes
                         }}</span>
                     </div>
-                    <h5 @click="showAddReply" class="discussion-item-reply pointer m-0">Reply</h5>
+                    <h5 @click.prevent="showAddReply(`itemReply${index}`)"
+                        class="discussion-item-reply pointer user-select-none m-0">Reply
+                    </h5>
                 </div>
-                <replyItem :itemReplies="item.replies"></replyItem>
-                <addReply v-if="reply"></addReply>
+                <!---------------- reply item ---------------->
+                <div>
+                    <replyItem @likeAddedReply="likeAddedReply" :itemReplies="item.replies" :parentItemId="item.id">
+                    </replyItem>
+                </div>
+                <!---------------- add reply ---------------->
+                <div :ref="`itemReply${index}`" class="discussion-item-reply-hide">
+                    <addReply @addReply="addReply" :parentItemId="item.id" :replyShow="`itemReply${index}`"></addReply>
+                </div>
             </div>
         </div>
     </div>
@@ -53,19 +68,47 @@ export default {
     },
     data() {
         return {
-            reply: false,
+            discussionReplay: [],
         }
     },
     methods: {
         showNameInitials(name) {
             return name.split(" ").map((n, i, a) => i === 0 || i + 1 === a.length ? n[0] : null).join("").toUpperCase();
         },
-        showAddReply() {
-            this.reply = !this.reply
+        showAddReply(ref) {
+            if (this.$refs[ref][0].classList.value === 'discussion-item-reply-show') {
+                this.$refs[ref][0].classList.value = 'discussion-item-reply-hide'
+            }
+            else {
+                this.$refs[ref][0].classList.value = 'discussion-item-reply-show'
+            }
         },
-        addReply() {
-
-        }
+        addReply(text, parentItemId, replyShow) {
+            this.$refs[replyShow][0].classList.value = 'discussion-item-reply-hide'
+            let lastId = this.discussions.slice(-1)[0].id
+            if (text) {
+                this.discussionReplay = {
+                    id: lastId + 1,
+                    date: new Date().getHours() + ":" + new Date().getMinutes(),
+                    user: {
+                        name: "James Marsden",
+                        avatar: require('@/assets/images/profile-picture-3.jpg')
+                    },
+                    text: text,
+                    likes: 0,
+                    iLikedIt: false,
+                }
+                this.$emit("addReply", this.discussionReplay, parentItemId)
+            }
+        },
+        getlikedItem(id, iLikedIt) {
+            if (iLikedIt === false) {
+                this.$emit("likeAdded", id)
+            }
+        },
+        likeAddedReply(id, parentItemId) {
+            this.$emit("likeAddedReply", id, parentItemId)
+        },
     },
 }
 </script>
@@ -112,6 +155,39 @@ export default {
             height: 100%;
             width: 100%;
         }
+    }
+
+    &-fade {
+        -webkit-animation: discussion-item-fade .5s;
+        animation: discussion-item-fade .5s;
+
+        @-webkit-keyframes discussion-item-fade {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes discussion-item-fade {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    }
+
+    &-reply-hide {
+        display: none !important;
+    }
+
+    &-reply-show {
+        display: block !important;
     }
 }
 </style>

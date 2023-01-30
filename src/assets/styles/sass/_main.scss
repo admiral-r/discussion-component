@@ -19,6 +19,10 @@ a {
     text-decoration: none !important;
 }
 
+.user-select-none {
+    user-select: none !important;
+}
+
 .object-fit-cover {
     object-fit: cover;
 }

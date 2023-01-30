@@ -1,5 +1,6 @@
 <template>
     <div v-for="(item, index) in itemReplies" :key="index" class="d-flex justify-content-between mt-3">
+        <!---------------- avatar ---------------->
         <div>
             <div class="reply-item-pic mr-2">
                 <img v-if="item.user.avatar" :src="item.user.avatar" class="object-fit-cover rounded-circle w-100 h-100"
@@ -10,18 +11,23 @@
             </div>
         </div>
         <div class="w-100">
-            <div class="d-flex align-items-center">
+            <!---------------- user name and date ---------------->
+            <div class="d-flex align-items-center user-select-none">
                 <h4 class="m-0 mr-1">{{ item.user.name }}</h4>
                 <span class="reply-item-time">{{ item.date }}</span>
             </div>
-            <p class="reply-item-text">{{ item.text }}</p>
+            <!---------------- text ---------------->
+            <p class="reply-item-text user-select-none">{{ item.text }}</p>
+            <!---------------- like ---------------->
             <div class="d-flex mt-2">
-                <div class="reply-item-like d-flex align-items-center pointer mr-3 "
+                <div @click="getlikedReplyItem(item.id, item.iLikedIt)"
+                    class="reply-item-like d-flex align-items-center user-select-none pointer mr-3 "
                     :class="{ 'reply-item-like-active': item.iLikedIt }">
                     <img v-if="!item.iLikedIt" src="@/assets/svg/like-dark.svg" alt="like">
                     <img v-if="item.iLikedIt" src="@/assets/svg/like-white.svg" alt="like">
-                    <span class="font-weight-bold ml-1 mt-1"
-                        :class="{ 'text-white': item.iLikedIt }">{{ item.likes }}</span>
+                    <span class="font-weight-bold ml-1 mt-1" :class="{ 'text-white': item.iLikedIt }">{{
+                        item.likes
+                    }}</span>
                 </div>
             </div>
         </div>
@@ -35,6 +41,9 @@ export default {
         itemReplies: {
             type: Array,
         },
+        parentItemId: {
+            type: Number,
+        },
     },
     data() {
         return {
@@ -44,6 +53,11 @@ export default {
     methods: {
         showNameInitials(name) {
             return name.split(" ").map((n, i, a) => i === 0 || i + 1 === a.length ? n[0] : null).join("").toUpperCase();
+        },
+        getlikedReplyItem(id, iLikedIt) {
+            if (iLikedIt === false) {
+                this.$emit("likeAddedReply", id, this.parentItemId)
+            }
         },
     }
 }

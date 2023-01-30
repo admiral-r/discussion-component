@@ -2,11 +2,13 @@
   <div class="container bg-white">
     <!---------- start the discussion ---------->
     <div>
-      <addDiscussion @addDiscussionText=addDiscussionText></addDiscussion>
+      <addDiscussion @addDiscussionText="addDiscussionText"></addDiscussion>
     </div>
     <!---------- discussion ---------->
     <div>
-      <discussionItem :discussions="discussions"></discussionItem>
+      <discussionItem @addReply="addReply" @likeAdded="likeAdded" @likeAddedReply="likeAddedReply"
+        :discussions="discussions">
+      </discussionItem>
     </div>
   </div>
 </template>
@@ -24,6 +26,18 @@ export default {
     return {
       discussions: [
         {
+          id: 0,
+          date: '05:12',
+          user: {
+            name: "Amir Rz",
+          },
+          text: "I enjoyed doing this project. Thanks for sharing this repository with me",
+          likes: 2,
+          iLikedIt: false,
+          replies: []
+        },
+        {
+          id: 1,
           date: '10:14',
           user: {
             name: "Savannah Nguyen"
@@ -34,6 +48,7 @@ export default {
           replies: []
         },
         {
+          id: 2,
           date: '10:30',
           user: {
             name: "Marvin McKinney",
@@ -45,6 +60,7 @@ export default {
           replies: []
         },
         {
+          id: 3,
           date: '11:32',
           user: {
             name: "Bessie Cooper",
@@ -55,6 +71,7 @@ export default {
           iLikedIt: false,
           replies: [
             {
+              id: 0,
               date: '15:14',
               user: {
                 name: "Marvin McKinney",
@@ -65,6 +82,7 @@ export default {
               iLikedIt: false,
             },
             {
+              id: 1,
               date: '16:50',
               user: {
                 name: "Bessie Cooper",
@@ -82,7 +100,34 @@ export default {
   methods: {
     addDiscussionText(discussion) {
       this.discussions.push(discussion);
-    }
+    },
+    likeAdded(id) {
+      for (let item in this.discussions) {
+        if (this.discussions[item].id === id) {
+          this.discussions[item].iLikedIt = true
+          this.discussions[item].likes++
+        }
+      }
+    },
+    likeAddedReply(childId, parentId) {
+      for (let item in this.discussions) {
+        if (this.discussions[item].id === parentId) {
+          for (let childItem in this.discussions[item].replies) {
+            if (this.discussions[item].replies[childItem].id === childId) {
+              this.discussions[item].replies[childItem].iLikedIt = true
+              this.discussions[item].replies[childItem].likes++
+            }
+          }
+        }
+      }
+    },
+    addReply(discussionReplay, parentItemId) {
+      for (let item in this.discussions) {
+        if (this.discussions[item].id === parentItemId) {
+          this.discussions[item].replies.push(discussionReplay);
+        }
+      }
+    },
   },
 }
 </script>
