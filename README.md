@@ -1,24 +1,9 @@
-# discussion-component
+<div align="left">
+  <h1 align="left">discussion</h1>
+</div>
 
-## Project setup
-```
-npm install
-```
+<img align="center" src="discussion.png">
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## About
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+discussion page with the possibility of adding discussion, likes and replies
